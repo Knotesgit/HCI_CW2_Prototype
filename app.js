@@ -44,7 +44,7 @@ const elements = {
   drawerHeading: $("drawerHeading"), drawerContent: $("drawerContent"),
   closeDrawer: $("closeDrawer"),
   composer: $("composer"), input: $("messageInput"), sendButton: $("sendButton"),
-  toast: $("toast"), reset: $("resetDemo")
+  toast: $("toast"), reset: $("resetDemo"), scrollLatest: $("scrollLatest")
 };
 
 const safeRead = () => {
@@ -106,10 +106,24 @@ function appendMessage(root, type, text, id, { local = false, excerpt = false, c
   const avatar = add(container, "div", "avatar", type === "user" ? "U" : "AI");
   avatar.setAttribute("aria-hidden", "true");
   const wrap = add(container, "div", "message-wrap");
-  add(wrap, "div", "who", type === "user" ? (local ? "You · local" : "You") : "Assistant");
-  add(wrap, "div", "bubble", text);
-  if (excerpt) add(wrap, "div", "excerpt-label", "Assistant excerpt · full reply shortened for this prototype");
-  if (local) add(wrap, "div", "excerpt-label", "Locally added; no AI response is generated");
+  add(wrap, "div", "who", type === "user" ? "You" : "Assistant");
+  const bubble = add(wrap, "div", "bubble", null);
+  if (Array.isArray(text)) {
+    bubble.classList.add("rich-message");
+    for (const block of text) {
+      if (block.type === "table") {
+        const tableWrap = add(bubble, "div", "table-scroll");
+        const table = add(tableWrap, "table", "conversation-table");
+        (block.rows || []).forEach((row, idx) => {
+          const tr = add(table, "tr");
+          row.forEach((cell) => add(tr, idx === 0 ? "th" : "td", "", cell));
+        });
+      } else if (block.text) {
+        add(bubble, block.type === "heading" ? "h3" : block.type === "quote" ? "blockquote" : "p",
+          `source-block ${block.type === "list" ? "source-list" : ""}`, block.text);
+      }
+    }
+  } else bubble.textContent = text;
   if (change) {
     const marker = makeButton("", "change-marker", () => openDrawer("details", change.id, marker));
     marker.dataset.event = change.id;
@@ -126,11 +140,9 @@ function renderConversation() {
   SOURCE_TURNS.forEach((pair) => {
     const section = add(elements.conversation, "section", "exchange");
     section.setAttribute("aria-label", `Conversation exchange ${pair.turn}`);
-    const caption = pair.turn === 1 ? "INITIAL PLAN" : pair.turn === 4 ? "BUDGET UPDATE" : pair.turn === 5 ? "ROOM UPDATE" : "PLANNING DISCUSSION";
-    add(section, "div", "exchange-index", caption);
     appendMessage(section, "user", pair.user, `u-${String(pair.turn).padStart(2, "0")}`);
     const msgId = `a-${String(pair.turn).padStart(2, "0")}`;
-    appendMessage(section, "assistant", pair.assistant, msgId, { excerpt: true, change: eventForTarget(msgId) });
+    appendMessage(section, "assistant", pair.assistantBlocks, msgId, { change: eventForTarget(msgId) });
   });
   state.messages.forEach((text, i) => appendMessage(elements.conversation, "user", text, `local-${i}`, { local: true }));
   updatePinCount();
@@ -171,8 +183,7 @@ function renderDetails() {
   const e = eventById(state.eventId);
   setHeader("CHANGE INSPECTION", e.label);
   const root = elements.drawerContent;
-  add(root, "span", "status-pill", "SYSTEM-SUGGESTED · PRESET EXAMPLE");
-  add(root, "p", "summary-lead", "A possible revision is connected to this AI reply. Inspect its reported cause before deciding whether to retain it.");
+
   const delta = add(root, "div", "delta-card");
   add(delta, "p", "card-key", "Reported change");
   const values = add(delta, "div", "delta");
@@ -186,23 +197,23 @@ function renderDetails() {
   const reason = add(root, "div", "reason-card");
   add(reason, "p", "card-key", "REPORTED REASON");
   add(reason, "p", "", e.reason);
-  add(reason, "small", "", e.note);
+
   root.append(makeButton("See original messages  →", "drawer-button primary", () => switchDrawer("sources")));
   const pinned = state.pinned.includes(e.id);
   const pinButton = makeButton(pinned ? "✓ Pinned — remove pin" : "Pin this change", `drawer-button ${pinned ? "saved" : ""}`, () => togglePin(e.id));
   pinButton.dataset.testid = "pin-toggle";
   root.append(pinButton);
-  add(root, "p", "disclaimer", "Pinning keeps a change accessible in this conversation. It does not approve or verify the system’s explanation.");
+
 }
 function renderSources() {
   const e = eventById(state.eventId);
   setHeader("SOURCE INSPECTION", "Original messages");
-  add(elements.drawerContent, "p", "summary-lead", `Two source messages show where the ${e.label.toLowerCase()} first appeared and where it was later revised.`);
+
   for (const source of e.sources) {
     const item = add(elements.drawerContent, "article", "source-item");
     const head = add(item, "div", "source-head");
     add(head, "span", "", source.title);
-    add(head, "span", "source-kicker", "USER MESSAGE");
+
     const number = Number(source.id.split("-")[1]);
     const turn = SOURCE_TURNS.find((x) => x.turn === number);
     add(item, "p", "source-quote", `“${turn.user}”`);
@@ -220,14 +231,13 @@ function renderPinned() {
   if (state.pinned.length === 0) {
     add(root, "span", "status-pill", "NONE SAVED");
     add(root, "h3", "empty-title", "Keep only what matters.");
-    add(root, "p", "summary-lead", "Suggested changes are not saved automatically. Review a source and choose Pin to keep it here for later.");
+
     root.append(makeButton("Review the budget example", "drawer-button primary", () => {
       state.eventId = "budget"; switchDrawer("details"); jumpToMessage("a-04");
     }));
     return;
   }
-  add(root, "span", "status-pill saved", `${state.pinned.length} USER-PINNED ${state.pinned.length === 1 ? "CHANGE" : "CHANGES"}`);
-  add(root, "p", "summary-lead", "These examples were explicitly pinned in this browser. Pinning is not an assertion that the underlying reported cause is verified.");
+
   state.pinned.forEach((id) => {
     const e = eventById(id);
     const card = add(root, "article", "pin-card");
@@ -291,7 +301,7 @@ elements.composer.addEventListener("submit", (event) => {
   elements.input.value = "";
   elements.sendButton.disabled = true;
   jumpToMessage(id);
-  showToast("Local follow-up added. No AI response is generated.");
+  showToast("Saved locally — no AI reply is generated.");
 });
 elements.reset.addEventListener("click", () => {
   if (!window.confirm("Reset pinned changes and locally added messages in this browser?")) return;
@@ -300,7 +310,7 @@ elements.reset.addEventListener("click", () => {
   persist();
   closeDrawer();
   renderConversation();
-  jumpToMessage("a-04");
+  scrollToLatest();
   showToast("Local demonstration data reset.");
 });
 document.addEventListener("keydown", (event) => {
@@ -308,11 +318,15 @@ document.addEventListener("keydown", (event) => {
   if (elements.sidebar.classList.contains("open")) closeNavigation();
   else if (state.mode) closeDrawer();
 });
-// Start close to a review marker; the full source conversation remains scrollable.
-requestAnimationFrame(() => {
-  const marker = $("a-04");
-  if (!marker) return;
-  const viewport = elements.chatScroll.getBoundingClientRect();
-  const item = marker.getBoundingClientRect();
-  elements.chatScroll.scrollTop += item.top - viewport.top - 170;
-});
+// Open at the latest message; example shortcuts remain available for inspection.
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+function scrollToLatest(instant = false) { elements.chatScroll.scrollTo({ top: elements.chatScroll.scrollHeight, behavior: instant ? "instant" : "smooth" }); }
+function updateLatestVisibility() {
+  if (!elements.scrollLatest) return;
+  const el = elements.chatScroll;
+  elements.scrollLatest.classList.toggle("visible", el.scrollHeight - el.scrollTop - el.clientHeight > 240);
+}
+elements.chatScroll.addEventListener("scroll", updateLatestVisibility, { passive: true });
+elements.scrollLatest.addEventListener("click", scrollToLatest);
+requestAnimationFrame(() => requestAnimationFrame(() => { scrollToLatest(true); updateLatestVisibility(); }));
+window.addEventListener("load", () => { scrollToLatest(true); updateLatestVisibility(); }, { once: true });
