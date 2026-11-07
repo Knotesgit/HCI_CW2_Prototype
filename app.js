@@ -106,7 +106,7 @@ function appendMessage(root, type, text, id, { local = false, excerpt = false, c
   const avatar = add(container, "div", "avatar", type === "user" ? "U" : "AI");
   avatar.setAttribute("aria-hidden", "true");
   const wrap = add(container, "div", "message-wrap");
-  add(wrap, "div", "who", type === "user" ? (local ? "You · local demonstration" : "User · source conversation") : "AI assistant · source conversation");
+  add(wrap, "div", "who", type === "user" ? (local ? "You · local" : "You") : "Assistant");
   add(wrap, "div", "bubble", text);
   if (excerpt) add(wrap, "div", "excerpt-label", "Assistant excerpt · full reply shortened for this prototype");
   if (local) add(wrap, "div", "excerpt-label", "Locally added; no AI response is generated");
@@ -125,7 +125,7 @@ function renderConversation() {
   clear(elements.conversation);
   SOURCE_TURNS.forEach((pair) => {
     const section = add(elements.conversation, "section", "exchange");
-    section.setAttribute("aria-label", `Workshop conversation, exchange ${pair.turn}`);
+    section.setAttribute("aria-label", `Conversation exchange ${pair.turn}`);
     const caption = pair.turn === 1 ? "INITIAL PLAN" : pair.turn === 4 ? "BUDGET UPDATE" : pair.turn === 5 ? "ROOM UPDATE" : "PLANNING DISCUSSION";
     add(section, "div", "exchange-index", caption);
     appendMessage(section, "user", pair.user, `u-${String(pair.turn).padStart(2, "0")}`);
