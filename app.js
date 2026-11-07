@@ -229,12 +229,7 @@ function renderPinned() {
   setHeader("YOUR CURATED CHANGES", "Pinned changes");
   const root = elements.drawerContent;
   if (state.pinned.length === 0) {
-    add(root, "span", "status-pill", "NONE SAVED");
-    add(root, "h3", "empty-title", "Keep only what matters.");
-
-    root.append(makeButton("Review the budget example", "drawer-button primary", () => {
-      state.eventId = "budget"; switchDrawer("details"); jumpToMessage("a-04");
-    }));
+    add(root, "p", "empty-title", "No changes pinned yet.");
     return;
   }
 
