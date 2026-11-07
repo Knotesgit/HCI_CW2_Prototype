@@ -94,3 +94,59 @@ body{background:#212121}
   font-weight:450;
   line-height:1.5;
 }
+
+
+/* Visible assessor-only examples, grouped separately from the proposed chat UI. */
+.demo-shortcuts-heading{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin:4px 9px 10px;
+  padding:0;
+  border:0;
+}
+.demo-shortcuts-heading strong{
+  color:#f0f0f0;
+  font-size:12px;
+  font-weight:750;
+  letter-spacing:.055em;
+}
+.demo-shortcuts-heading span{
+  color:#c4c4c4;
+  font-size:12px;
+  line-height:1.4;
+}
+.demo-shortcuts-box{
+  border:1px solid #454545;
+  border-radius:14px;
+  background:#1c1c1c;
+  padding:7px 6px;
+}
+.demo-shortcuts-box .nav-link{
+  border-radius:9px;
+  min-height:46px;
+  padding:12px;
+}
+.demo-shortcuts-box .nav-link:hover,
+.demo-shortcuts-box .nav-link:focus-visible{
+  background:#303030;
+}
+.sidebar-bottom .reset-button{
+  display:flex;
+  width:100%;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  padding:12px 16px;
+  border:1px solid #595959;
+  border-radius:11px;
+  background:#292929;
+  color:#f0f0f0;
+  font-size:14px;
+  font-weight:650;
+  text-decoration:none;
+}
+.sidebar-bottom .reset-button:hover{
+  background:#373737;
+  border-color:#858585;
+}

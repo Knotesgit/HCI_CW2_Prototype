@@ -1,42 +1,45 @@
-# Inline Change Lens — CW2 interactive design prototype
+# Inline Change Lens
 
-## Open locally
+**Human–Computer Interaction · Interactive Design Prototype**
 
-Open `index.html` in a modern browser. No installation, build, backend, API key, or network connection is required. The source messages are bundled in `conversation-data.js`.
+[**Launch interactive prototype**](https://knotesgit.github.io/HCI_CW2_Prototype/)
 
-## Demonstration path
+## Design concept
 
-1. Use **Budget revision** in the left navigation if needed, then click **Possible budget revision → Review** underneath the assistant's budget reply.
-2. Inspect **Earlier plan**, **Later update**, and the reported reason in the persistent side panel; select **See original messages**. Source messages contain the researcher-archived workshop-chat wording.
-3. Select **Back to change details**; choose **Pin this change**.
-4. Scroll in the conversation or add a **local** follow-up. The panel is non-modal; the chat remains available.
-5. Close the panel and reopen the pinned item through **Pinned changes**. Remove the pin, or review the separate **Time revision** example.
-6. Reload the page to check that pins persist in browser `localStorage`. Use **Reset saved demo data** to clear local state.
+Inline Change Lens explores how people can inspect revisions in a long AI-assisted conversation without losing the conversational context. A system-suggested marker appears beside a relevant assistant response. Rather than treating the suggested change as an authoritative fact, the interface exposes the earlier and updated values, the reported reason, and the original messages on which the suggestion is based.
 
-## Interaction scope and limits
+The design responds primarily to the CW1 theme **T4 — Facts Versus Reasons**: locating the latest decision does not necessarily mean understanding why it changed. **T3 — Active Context Recovery** informs source navigation, while **T5 — Retention Choices** motivates user-controlled pinning.
 
-- Budget £600 → £420 (user reports funding reduction from the Students' Union).
-- Time 1–4 pm → 2–4 pm (user reports room access limited to 2–4 pm).
-- These are **predefined, fixed-scenario change events**. The prototype does not infer changes using an LLM, verify external facts, access other chats, or generate responses.
-- Source content is excerpted from the supplied researcher-prepared 11-exchange Do-method conversation. User messages are verbatim; displayed assistant extracts are verbatim **first paragraphs** (not complete assistant replies).
-- Pinned state and user-added local follow-ups use browser-only `localStorage`; nothing is uploaded or shared. The note exists only on that browser/device.
-- For demo accessibility, actions use ordinary buttons, focus indicators, and Escape to close the panel.
+## Interaction
 
-## Suggested GitHub Pages publication
+The prototype presents the complete eleven-exchange, researcher-prepared workshop-planning conversation and initially opens at its latest message. Two predefined revision examples are available:
 
-Use a public repository that contains `index.html`, `styles.css`, `app.js`, and `conversation-data.js`. In GitHub repository **Settings → Pages**, configure **Deploy from a branch → main → / (root)**. The resulting public `https://<username>.github.io/<repo>/` URL can be put in the CW2 pictorial after verifying it in a logged-out browser. The code is entirely static; Pages requires no runtime configuration.
+| Revision | Earlier position | Later position | Reported reason |
+| --- | --- | --- | --- |
+| Budget | £600 | £420 | Students’ Union funding reduction |
+| Workshop time | 1–4 pm | 2–4 pm | Reduced room availability |
 
-Do not upload real participant transcripts or private study records. This demonstration uses the researcher-prepared task conversation, not participants' Say/Do/Make transcripts.
+Selecting a **Possible revision · Review** marker opens a non-modal inspection panel. The panel displays the revision and offers **See original messages**, allowing the relevant conversation evidence to be inspected. The user can return to the change details, **Pin** or **Unpin** a change, continue reading the chat with the panel open, and revisit pinned changes from the chat header. Pinning denotes retention for later reference, not approval of the reported reason.
 
-## Academic use
+The left sidebar's **three demonstration shortcuts** provide direct access to the budget revision, time revision and original plan for assessment. They are **demonstration aids, not elements of the proposed product interface**. **Reset** clears locally stored demonstration data.
 
-The prototype illustrates a design intervention supported by CW1 T4 (facts vs reasons), with T3 context recovery and T5 retention choices as relevant adjacent insights. It is *not* an evaluated user study or evidence of improved user performance. The coursework pictorial must describe the actual interface and interactions, include genuine screenshots and an accessible demonstration link, and disclose generative-AI use in the required acknowledgement section.
+## Prototype fidelity and evidence
 
-**Local file caveat:** Some browsers restrict `localStorage` on `file://` URLs. The rest of the UI works when opened locally; publish to an HTTPS GitHub Pages URL to reliably verify cross-reload persistence before submission.
+This is a **bounded interactive prototype**, not a live AI change-detection system. Both suggested changes are preconfigured using the researcher-prepared study stimulus. Source inspection reveals statements from the conversation; it does not independently validate external funding or room-booking facts. The complete conversation preserves the structure of the researcher archive, including the extended checklist replies. Some later user prompts in that archive were reconstructed by the researcher, so the stimulus is not presented as an independently verified verbatim export from the original chat platform.
 
+The message composer adds local follow-up text only. It does not contact an AI model or generate assistant replies. Pinned changes and locally added messages are stored using browser `localStorage`; no backend, account or external API is used. Persistence is limited to the browser and device storing the data.
 
-## Full-conversation and navigation update (7 November 2026)
+The prototype demonstrates a design proposition and its interaction states. It is **not** evidence of a completed participant evaluation or improved user performance.
 
-The prototype now renders the **complete 11-turn researcher-archived workshop conversation**, including the long checklists in exchanges 10 and 11, rather than the former assistant excerpts. Paragraphs, headings, numbered/list content and budget/timetable tables are preserved. The page opens directly at the latest message. The left navigation retains shortcuts to the budget revision, time revision and original plan.
+## Implementation and access
 
-The UI uses a minimal neutral dark theme: explanatory scaffolding is removed from the primary chat surface, while a small information control discloses that change indicators are preconfigured examples, not live AI detection. The archived researcher document includes researcher-reconstructed user wording for some later turns; this prototype represents the frozen study stimulus, not a certified verbatim export of the original ChatGPT platform conversation.
+The site is implemented using static HTML, CSS and JavaScript and is deployable through GitHub Pages. No build process or external dependencies are required.
+
+| File | Role |
+| --- | --- |
+| `index.html` | Conversation layout and interface structure |
+| `styles.css` | Responsive visual presentation |
+| `app.js` | Change inspection, source navigation, pinning and local state |
+| `conversation-data.js` | Researcher-prepared eleven-exchange conversation |
+
+The demonstration is designed for desktop use and adapts to narrower viewports. Standard buttons, visible keyboard focus and Escape-to-close behaviour are provided for key interactions.
