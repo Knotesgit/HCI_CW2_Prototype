@@ -71,3 +71,26 @@ body{background:#212121}
 .scroll-latest{display:none;position:sticky;bottom:15px;margin:0 auto -8px;z-index:15;width:40px;height:40px;border-radius:50%;background:#404040;color:#fff;border:1px solid #777;font-size:21px;box-shadow:0 5px 18px #0007;cursor:pointer}.scroll-latest.visible{display:block}.scroll-latest:hover{background:#555}
 .composer{padding-top:10px}.composer-inner{min-height:55px}.composer input{font-size:15px}.sidebar-bottom{margin-top:auto}
 @media(max-width:900px){.sidebar.open{z-index:40}.prototype-info p{right:-6px}.conversation{padding-top:16px}.rich-message h3.source-block{font-size:16px}.conversation-table{font-size:12px}}
+
+/* Dedicated visible heading for demonstration-only shortcuts.
+   The generic .sidebar-label is intentionally hidden elsewhere. */
+.demo-shortcuts-heading{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  margin:5px 12px 12px;
+  padding:0 0 12px;
+  border-bottom:1px solid #393939;
+}
+.demo-shortcuts-heading strong{
+  color:#ededed;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.055em;
+}
+.demo-shortcuts-heading span{
+  color:#c5c5c5;
+  font-size:12px;
+  font-weight:450;
+  line-height:1.5;
+}
