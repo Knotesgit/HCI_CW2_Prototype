@@ -21,7 +21,7 @@ The prototype presents the complete eleven-exchange, researcher-prepared worksho
 
 Selecting a **Possible revision · Review** marker opens a non-modal inspection panel. The panel displays the revision and offers **See original messages**, allowing the relevant conversation evidence to be inspected. The user can return to the change details, **Pin** or **Unpin** a change, continue reading the chat with the panel open, and revisit pinned changes from the chat header. Pinning denotes retention for later reference, not approval of the reported reason.
 
-The left sidebar's **three demonstration shortcuts** provide direct access to the budget revision, time revision and original plan for assessment. They are **demonstration aids, not elements of the proposed product interface**. **Reset** clears locally stored demonstration data.
+The left sidebar's **two demonstration shortcuts** provide direct access to the budget and time revision examples for assessment; the original plan is accessible through source inspection. They are **demonstration aids, not elements of the proposed product interface**. **Reset** clears locally stored demonstration data.
 
 ## Prototype fidelity and evidence
 
